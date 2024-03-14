@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "1234",
+    "ticket": {
+    "eventName": "Jesse James",
+    "eventDateTime": "02/02/2023 20:00",
+    "venue": "Tashkent City",
+    "contactPhone": "+919008989",
+    "seat": "sector: B, row: 8, seat: 34"
+    }
+  }
+]

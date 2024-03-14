@@ -1,1 +1,75 @@
-p see this pug message?
+include ../layout.pug
+body
+    .container.mt-5(style="font-family: 'Roboto', sans-serif; color: #fff; font-size: 18px; margin-top: 50px; padding: 20px;")
+      .row.d-flex.align-items-center
+        .col-md-6
+          h1(style="color: #fff;") List:
+        .col-md-6.text-end
+          a.btn.btn-success(href='/add', role='button', style="background-color: #28a745; border-color: #28a745;", id="addButton") Add      
+      table.table.table-responsive.table-hover.table-striped.table-dark
+        thead
+          tr
+            th(scope="col") ID:
+            th(scope="col") Event Name:
+            th(scope="col") Event DateTime:
+            th(scope="col") Venue:
+            th(scope="col") Contact Phone:
+            th(scope="col") Seat:
+            th(scope="col") Actions:
+        tbody
+script.
+  document.addEventListener('DOMContentLoaded', function() {
+    axios.get('/api/ticket').then(function(response) {
+      const tickets = response.data;
+      const tableBody = document.querySelector('table tbody');
+      tickets.forEach(t => {
+        const row = document.createElement('tr');
+        const ticket = t.ticket
+        row.innerHTML = `
+          <td>${t.id}</td>
+          <td>${ticket.eventName}</td>
+          <td>${ticket.eventDateTime}</td>
+          <td>${ticket.venue}</td>
+          <td>${ticket.contactPhone}</td>
+          <td>${ticket.seat}</td>
+          <td>
+            <button class="btn btn-primary btn-sm update-btn" data-id="${t.id}" onclick="window.location.href='/update/${t.id}'" style="background-color: #28a745; border-color: #28a745;"><i class="fas fa-plus"></i></button>
+            <button class="btn btn-danger btn-sm delete-btn" data-id="${t.id}" style="background-color: #dc3545; border-color: #dc3545;"><i class="fas fa-times"></i></button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+    // Use event delegation for delete buttons
+    document.addEventListener('click', function(event) {
+      if (event.target && event.target.classList.contains('btn-danger')) {
+        const ticketId = event.target.getAttribute('data-id');
+        axios.delete(`/api/ticket/${ticketId}`).then(function(response) {
+          alert('Deleted successfully', response);
+          location.href = '/'
+        })
+        .catch(function(error) {
+          alert('Error deleting ticket: ' + error);
+        });
+      }
+    });
+  });
+
+// CSS for hover effect
+style.
+  .addButton:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  .update-btn:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  .delete-btn:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
